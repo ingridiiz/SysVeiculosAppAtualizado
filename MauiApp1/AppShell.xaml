@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    x:Class="SysVeiculosApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SysVeiculosApp"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.TabBarIsVisible="True"
+    Title="SysVeiculosApp">
+
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout Padding="15" Spacing="15">
+            <Image Source="veiculos.png"
+                   HeightRequest="100"
+                   WidthRequest="100"/>
+            <Label Text="SYSVEICULOS APP"
+                   HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="SYSVEICULOS MENU"
+                FlyoutDisplayOptions="AsMultipleItems">
+
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage"
+            Icon="home.png"/>
+        
+        <ShellContent
+           Title="Desenvolvedor"
+           ContentTemplate="{DataTemplate local:Desenvolvedor}"
+           Route="Desenvolvedor"
+           Icon="pessoa.png"/>
+
+        <ShellContent
+            Title="Marcas"
+            ContentTemplate="{DataTemplate local:MarcasPrincipal}"
+            Route="MarcasPrincipal"
+            Icon="marcas.png"/>
+
+        <ShellContent
+            Title="Modelos"
+            ContentTemplate="{DataTemplate local:ModelosPrincipal}"
+            Route="ModelosPrincipal"
+            Icon="modelo.png"/>
+
+        <ShellContent
+            Title="Veículos"
+            ContentTemplate="{DataTemplate local:VeiculosPrincipal}"
+            Route="VeiculosPrincipal"
+            Icon="veiculos.png"/>
+
+    </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Copyright @ingrid, P."
+                   HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+    </Shell.FlyoutFooter>
+</Shell>

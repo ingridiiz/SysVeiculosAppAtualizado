@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SysVeiculosApp.Desenvolvedor"
+             Title="Desenvolvedor">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
+
+            <Image Source="dotnet_bot.png" 
+                   WidthRequest="100" 
+                   HeightRequest="100" 
+                   HorizontalOptions="Center" />
+
+            <Label Text="SysVeiculosApp" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalTextAlignment="Center" />
+
+            <Label Text="Ingrid Pinheiro Machado" 
+                   FontSize="16" 
+                   HorizontalTextAlignment="Center" />
+
+            <Label Text="RA: 2510156" 
+                   FontSize="14" 
+                   TextColor="Gray" 
+                   HorizontalTextAlignment="Center" />
+
+            <Border BackgroundColor="#E0E0E0" 
+                    Stroke="#E0E0E0"
+                    StrokeThickness="1"
+                    Padding="15" 
+                    HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Label Text="Data: 30/09/2026" 
+                       FontSize="14" 
+                       TextColor="Black" 
+                       HorizontalTextAlignment="Center" />
+            </Border>
+
+            <Button Text="Home" 
+                    BackgroundColor="#512BD4" 
+                    TextColor="White" 
+                    CornerRadius="8"
+                    Clicked="BtnHome_Clicked" 
+                    WidthRequest="200" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
