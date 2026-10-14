@@ -13,26 +13,20 @@ namespace SysVeiculosApp
 
         private async void btnSalvarOnClick(object sender, EventArgs e)
         {
-          
-            int.TryParse(txtMarcaModelo.Text, out int marcaId);
-
-            Modelo novoModelo = new Modelo()
+            var modelo = new Modelo
             {
-                modnome = txtNomeModelo.Text,
-                marid = txtMarcaModelo.Text
+                modnome = txtNomeModelo.Text ?? string.Empty
             };
 
-            if (string.IsNullOrWhiteSpace(novoModelo.modnome))
+            if (string.IsNullOrWhiteSpace(modelo.modnome))
             {
                 await DisplayAlertAsync("Erro", "Por favor, insere o nome do modelo.", "OK");
                 return;
             }
 
-            await App.Database.SalvarModeloAsync(novoModelo);
+            ModelosRepositorio.Inserir(modelo);
 
-            await DisplayAlertAsync("Sucesso", "Modelo guardado com sucesso!", "OK");
-
-            await Navigation.PopAsync();
+            await Navigation.PopAsync(); 
         }
 
         private async void btnVoltarOnClick(object sender, EventArgs e)

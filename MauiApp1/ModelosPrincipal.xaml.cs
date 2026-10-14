@@ -1,6 +1,7 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.Maui.Controls;
-using System.Collections.Generic;
-using SysVeiculosApp;
 
 namespace SysVeiculosApp
 {
@@ -11,57 +12,58 @@ namespace SysVeiculosApp
             InitializeComponent();
         }
 
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
+            AtualizarLista();
+        }
 
-            var modelos = await App.Database.GetModelosAsync() ?? new List<Modelo>();
+        private void SearchBarModelos_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            AtualizarLista();
+        }
+
+        private void AtualizarLista()
+        {
+            var modelos = ModelosRepositorio.Listar();
+            string termo = searchBarModelos.Text;
+
+            if (!string.IsNullOrWhiteSpace(termo))
+            {
+                modelos = modelos
+                    .Where(m => $"{m.modid} {m.modnome} {m.modobservacoes}"
+                        .Contains(termo, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             collectionViewModelos.ItemsSource = modelos;
         }
 
-        private void collectionViewModelos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.Count > 0)
-            {
-                collectionViewModelos.SelectedItem = e.CurrentSelection[0];
-            }
-        }
-
-        private async void btnInserirOnClick(object sender, EventArgs e)
+        private async void BtnInserirOnClick(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ModelosInserir());
         }
 
-        private async void btnAlterar_Clicked(object sender, EventArgs e)
+        private async void BtnEditar_Clicked(object sender, EventArgs e)
         {
-            Modelo? modeloSelecionado = collectionViewModelos.SelectedItem as Modelo;
-            if (modeloSelecionado == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona um modelo na lista para alterar.", "OK");
-                return;
-            }
+            var modelo = (sender as Button)?.CommandParameter as Modelo;
+            if (modelo == null) return;
 
-            
-            await Navigation.PushAsync(new ModelosAlterar(modeloSelecionado));
+            await Navigation.PushAsync(new ModelosAlterar(modelo));
         }
 
-        private async void btnExcluir_Clicked(object sender, EventArgs e)
+        private async void BtnExcluir_Clicked(object sender, EventArgs e)
         {
-            Modelo? modeloSelecionado = collectionViewModelos.SelectedItem as Modelo;
-            if (modeloSelecionado == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona um modelo na lista para excluir.", "OK");
-                return;
-            }
+            var modelo = (sender as Button)?.CommandParameter as Modelo;
+            if (modelo == null) return;
 
-            bool confirmar = await DisplayAlertAsync("Excluir", "Deseja realmente excluir este modelo?", "Sim", "Não");
+            bool confirmar = await DisplayAlertAsync("Confirmação",
+                $"Deseja excluir o modelo {modelo.modnome}?", "Sim", "Não");
+
             if (confirmar)
             {
-                await App.Database.DeletarModeloAsync(modeloSelecionado);
-                await DisplayAlertAsync("Sucesso", "Modelo excluído com sucesso!", "OK");
-
-                var modelos = await App.Database.GetModelosAsync() ?? new List<Modelo>();
-                collectionViewModelos.ItemsSource = modelos;
+                ModelosRepositorio.Excluir(modelo.modid);
+                AtualizarLista();
             }
         }
     }

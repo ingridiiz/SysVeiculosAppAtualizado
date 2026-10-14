@@ -6,29 +6,36 @@ namespace SysVeiculosApp
 {
     public partial class ModelosAlterar : ContentPage
     {
-        private Modelo modeloSelecionado;
+        private readonly Modelo _modelo;
 
         public ModelosAlterar(Modelo modelo)
         {
             InitializeComponent();
-            modeloSelecionado = modelo;
 
-            txtNomeModelo.Text = modeloSelecionado.modnome;
-            txtMarcaModelo.Text = modeloSelecionado.marid.ToString();
+            _modelo = modelo;
 
-            
+            entModId.Text = _modelo.modid.ToString();
+            txtNomeModelo.Text = _modelo.modnome;
+            txtModObservacoes.Text = _modelo.modobservacoes;
         }
 
         private async void btnSalvarOnClick(object sender, EventArgs e)
         {
-            modeloSelecionado.modnome = txtNomeModelo.Text;
+            var modelo = new Modelo
+            {
+                modid = _modelo.modid,
+                modnome = txtNomeModelo.Text ?? string.Empty,
+                modobservacoes = txtModObservacoes.Text ?? string.Empty
+            };
 
-            modeloSelecionado.marid = txtMarcaModelo.Text;
+            if (string.IsNullOrWhiteSpace(modelo.modnome))
+            {
+                await DisplayAlertAsync("Erro", "Por favor, insere o nome do modelo.", "OK");
+                return;
+            }
 
+            ModelosRepositorio.Alterar(modelo);
 
-            await App.Database.SalvarModeloAsync(modeloSelecionado);
-
-            await DisplayAlertAsync("Sucesso", "Alteração salva com sucesso!", "OK");
             await Navigation.PopAsync();
         }
 

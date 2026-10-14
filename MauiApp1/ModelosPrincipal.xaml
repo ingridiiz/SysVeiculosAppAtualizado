@@ -2,42 +2,47 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.ModelosPrincipal"
-             Title="Modelos">
+             Title=":: MODELOS ::">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid Padding="15" RowSpacing="15"
+          RowDefinitions="Auto,*,Auto">
 
-            <CollectionView x:Name="collectionViewModelos"
-                            SelectionMode="Single"
-                            SelectionChanged="collectionViewModelos_SelectionChanged"
-                            HeightRequest="400">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
+        
+        <SearchBar x:Name="searchBarModelos"
+                   Grid.Row="0"
+                   Placeholder="Pesquisar modelo..."
+                   TextChanged="SearchBarModelos_TextChanged" />
 
-                        <Border BackgroundColor="White"
-                                Stroke="#E0E0E0"
-                                StrokeThickness="1"
-                                Padding="15"
-                                Margin="0,5">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
+       
+        <CollectionView x:Name="collectionViewModelos"
+                        Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="50,*,*,50,50">
+                        <Label Text="{Binding modid}" Grid.Column="0" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding modnome}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding modobservacoes}" Grid.Column="2" TextColor="Gray" VerticalOptions="Center" />
 
-                            <VerticalStackLayout Spacing="3">
+                        <Button Text="✏️"
+                                Grid.Column="3"
+                                BackgroundColor="Transparent"
+                                Clicked="BtnEditar_Clicked"
+                                CommandParameter="{Binding}" />
 
-                                <Label Text="{Binding modnome}" FontSize="18" FontAttributes="Bold" TextColor="Black" />
-                                <Label Text="{Binding marid, StringFormat='Marca: {0}'}" FontSize="14" TextColor="Gray" />
-                            </VerticalStackLayout>
-                        </Border>
+                        <Button Text="🗑️"
+                                Grid.Column="4"
+                                BackgroundColor="Transparent"
+                                Clicked="BtnExcluir_Clicked"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+        
+        <Button Text="Inserir Novo Modelo"
+                Grid.Row="2"
+                Clicked="BtnInserirOnClick" />
+    </Grid>
 
-            <Button Text="Inserir" Clicked="btnInserirOnClick" BackgroundColor="#512BD4" TextColor="White" />
-            <Button Text="Alterar" Clicked="btnAlterar_Clicked" />
-            <Button Text="Excluir" Clicked="btnExcluir_Clicked" BackgroundColor="#D32F2F" TextColor="White" />
-
-        </VerticalStackLayout>
-    </ScrollView>
 </ContentPage>
