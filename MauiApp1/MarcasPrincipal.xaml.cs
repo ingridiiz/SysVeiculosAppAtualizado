@@ -1,66 +1,67 @@
-using Microsoft.Maui.Controls;
-using SysVeiculosApp;
 
-namespace SysVeiculosApp
+using System.Collections.ObjectModel;
+
+namespace SysVeiculosApp;
+
+public partial class MarcasPrincipal : ContentPage
 {
-    public partial class MarcasPrincipal : ContentPage
+    public MarcasPrincipal()
     {
-        public MarcasPrincipal()
+        InitializeComponent();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        AtualizarLista();
+    }
+
+    private void SearchBarMarcas_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        AtualizarLista();
+    }
+
+    private void AtualizarLista()
+    {
+        var modelos = ModelosRepositorio.Listar();
+        string termo = searchBarMarcas.Text;
+
+        if (!string.IsNullOrWhiteSpace(termo))
         {
-            InitializeComponent();
+            modelos = modelos
+                .Where(m => $"{m.modid} {m.modnome} {m.modobservacoes}"
+                    .Contains(termo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
-        protected override async void OnAppearing()
+        listaMarcas.ItemsSource = modelos;
+    }
+
+    private async void BtnInserirOnClick(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ModelosInserir());
+    }
+
+    private async void OnAlterarClicked(object sender, EventArgs e)
+    {
+        var modelo = (sender as Button)?.CommandParameter as Modelo;
+        if (modelo == null) return;
+
+        await Navigation.PushAsync(new ModelosAlterar(modelo));
+    }
+
+    private async void OnExcluirClicked(object sender, EventArgs e)
+    {
+        var modelo = (sender as Button)?.CommandParameter as Modelo;
+        if (modelo == null) return;
+
+        bool confirmar = await DisplayAlertAsync("Confirmação",
+            $"Deseja excluir o modelo {modelo.modnome}?", "Sim", "Não");
+
+        if (confirmar)
         {
-            base.OnAppearing();
-
-            var marcas = await App.Database.GetMarcasAsync() ?? new List<Marca>();
-            collectionViewMarcas.ItemsSource = marcas;
-        }
-
-        private void collectionViewMarcas_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.Count > 0)
-            {
-                collectionViewMarcas.SelectedItem = e.CurrentSelection[0];
-            }
-        }
-
-        private async void btnInserir_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new MarcasInserir());
-        }
-
-        private async void btnAlterar_Clicked(object sender, EventArgs e)
-        {
-            Marca? marcaSelecionada = collectionViewMarcas.SelectedItem as Marca;
-            if (marcaSelecionada == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona uma marca na lista para alterar.", "OK");
-                return;
-            }
-
-            await Navigation.PushAsync(new MarcasAlterar(marcaSelecionada));
-        }
-
-        private async void btnExcluir_Clicked(object sender, EventArgs e)
-        {
-            Marca? marcaSelecionada = collectionViewMarcas.SelectedItem as Marca;
-            if (marcaSelecionada == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona uma marca na lista para excluir.", "OK");
-                return;
-            }
-
-            bool confirmar = await DisplayAlertAsync("Excluir", "Deseja realmente excluir esta marca?", "Sim", "Não");
-            if (confirmar)
-            {
-                await App.Database.DeletarMarcaAsync(marcaSelecionada);
-                await DisplayAlertAsync("Sucesso", "Marca excluída com sucesso!", "OK");
-
-                var marcas = await App.Database.GetMarcasAsync() ?? new List<Marca>();
-                collectionViewMarcas.ItemsSource = marcas;
-            }
+            ModelosRepositorio.Excluir(modelo.modid);
+            AtualizarLista();
         }
     }
 }

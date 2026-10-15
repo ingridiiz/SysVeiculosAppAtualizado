@@ -1,43 +1,28 @@
-using Microsoft.Maui.Controls;
-using SysVeiculosApp;
 
-namespace SysVeiculosApp
+namespace SysVeiculosApp;
+
+public partial class MarcasInserir : ContentPage
 {
-    public partial class MarcasInserir : ContentPage
+    public MarcasInserir()
     {
-        public MarcasInserir()
+        InitializeComponent();
+    }
+
+    private async void BtnSalvar_Clicked(object sender, EventArgs e)
+    {
+        var modelo = new Modelo
         {
-            InitializeComponent();
-        }
+            modnome = entNome.Text ?? "",
+            modobservacoes = entObservacoes.Text ?? ""
+        };
 
-        private async void btnSalvarOnClick(object sender, EventArgs e)
-        {
-            Marca novaMarca = new Marca()
-            {
-                marnome = txtNomeMarca.Text,
-                marobservacoes = txtObsMarca.Text
-            };
+        ModelosRepositorio.Inserir(modelo);
 
-            if (string.IsNullOrWhiteSpace(novaMarca.marnome))
-            {
-                await DisplayAlertAsync("Erro", "Por favor, insere o nome da marca.", "OK");
-                return;
-            }
+        await Navigation.PopAsync(); 
+    }
 
-            await App.Database.SalvarMarcaAsync(novaMarca);
-
-            await DisplayAlertAsync("Sucesso", "Marca guardada com sucesso!", "OK");
-
-            await Navigation.PopAsync();
-        }
-
-        private async void btnVoltarOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
-        }
+    private async void BtnVoltar_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
     }
 }
-        
-
-    
-

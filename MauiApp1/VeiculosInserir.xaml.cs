@@ -1,41 +1,32 @@
 using Microsoft.Maui.Controls;
-using SysVeiculosApp;
+using System;
 
-namespace SysVeiculosApp
+namespace SysVeiculosApp;
+
+public partial class VeiculosInserir : ContentPage
 {
-    public partial class VeiculosInserir : ContentPage
+    public VeiculosInserir()
     {
-        public VeiculosInserir()
+        InitializeComponent();
+    }
+
+    private async void BtnSalvar_Clicked(object sender, EventArgs e)
+    {
+        var veiculo = new Veiculo
         {
-            InitializeComponent();
-        }
+            veinome = entNome.Text ?? "",
+            veianofabricacao = int.TryParse(entAnoFabricacao.Text, out int anoFab) ? anoFab : 0,
+            veianomodelos = int.TryParse(entAnoModelo.Text, out int anoMod) ? anoMod : 0,
+            velobservacoes = entObservacoes.Text ?? ""
+        };
 
-        private async void btnSalvarOnClick(object sender, EventArgs e)
-        {
-            Veiculo novoVeiculo = new Veiculo()
-            {
-                veinome = txtNome.Text,
-                veianofabricacao = int.TryParse(txtAnoFabricacao.Text, out int fab) ? fab : 0,
-                veianomodelo = int.TryParse(txtAnoModelo.Text, out int mod) ? mod : 0,
-                veiobservacoes = txtObservacoes.Text
-            };
+        VeiculosRepositorio.Inserir(veiculo);
 
-            if (string.IsNullOrWhiteSpace(novoVeiculo.veinome))
-            {
-                await DisplayAlertAsync("Erro", "Por favor, insere o nome do veículo.", "OK");
-                return;
-            }
+        await Navigation.PopAsync();
+    }
 
-            await App.Database.SalvarVeiculoAsync(novoVeiculo);
-
-            await DisplayAlertAsync("Sucesso", "Veículo guardado com sucesso!", "OK");
-
-            await Navigation.PopAsync();
-        }
-
-        private async void btnVoltarOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
-        }
+    private async void BtnVoltar_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
     }
 }

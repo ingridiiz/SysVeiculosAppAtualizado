@@ -1,37 +1,33 @@
 using Microsoft.Maui.Controls;
-using SysVeiculosApp;
+using System;
 
-namespace SysVeiculosApp
+namespace SysVeiculosApp;
+
+public partial class MarcasAlterar : ContentPage
 {
-    public partial class MarcasAlterar : ContentPage
+    private Modelo _modelo;
+
+    public MarcasAlterar(Modelo modelo)
     {
-        private Marca marcaSelecionada;
+        InitializeComponent();
+        _modelo = modelo;
 
-        public MarcasAlterar(Marca marca)
-        {
-            InitializeComponent();
-            marcaSelecionada = marca;
+        entNome.Text = _modelo.modnome;
+        entObservacoes.Text = _modelo.modobservacoes;
+    }
 
-           
-            txtMarNome.Text = marcaSelecionada.marnome;
-            txtMarObservacoes.Text = marcaSelecionada.marobservacoes;
-        }
+    private async void BtnSalvar_Clicked(object sender, EventArgs e)
+    {
+        _modelo.modnome = entNome.Text ?? "";
+        _modelo.modobservacoes = entObservacoes.Text ?? "";
 
-        private async void btnSalvarOnClick(object sender, EventArgs e)
-        {
-            
-            marcaSelecionada.marnome = txtMarNome.Text;
-            marcaSelecionada.marobservacoes = txtMarObservacoes.Text;
+        ModelosRepositorio.Alterar(_modelo);
 
-            await App.Database.SalvarMarcaAsync(marcaSelecionada);
+        await Navigation.PopAsync();
+    }
 
-            await DisplayAlertAsync("Sucesso", "Alteração salva com sucesso!", "OK");
-            await Navigation.PopAsync();
-        }
-
-        private async void btnVoltarOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
-        }
+    private async void BtnVoltar_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
     }
 }

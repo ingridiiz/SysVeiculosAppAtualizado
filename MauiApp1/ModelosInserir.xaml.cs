@@ -1,37 +1,30 @@
 using Microsoft.Maui.Controls;
 using System;
-using SysVeiculosApp;
 
-namespace SysVeiculosApp
+namespace SysVeiculosApp;
+
+public partial class ModelosInserir : ContentPage
 {
-    public partial class ModelosInserir : ContentPage
+    public ModelosInserir()
     {
-        public ModelosInserir()
+        InitializeComponent();
+    }
+
+    private async void BtnSalvar_Clicked(object sender, EventArgs e)
+    {
+        var modelo = new Modelo
         {
-            InitializeComponent();
-        }
+            modnome = entNome.Text ?? "",
+            modobservacoes = entObservacoes.Text ?? ""
+        };
 
-        private async void btnSalvarOnClick(object sender, EventArgs e)
-        {
-            var modelo = new Modelo
-            {
-                modnome = txtNomeModelo.Text ?? string.Empty
-            };
+        ModelosRepositorio.Inserir(modelo);
 
-            if (string.IsNullOrWhiteSpace(modelo.modnome))
-            {
-                await DisplayAlertAsync("Erro", "Por favor, insere o nome do modelo.", "OK");
-                return;
-            }
+        await Navigation.PopAsync(); // volta para a lista
+    }
 
-            ModelosRepositorio.Inserir(modelo);
-
-            await Navigation.PopAsync(); 
-        }
-
-        private async void btnVoltarOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
-        }
+    private async void BtnVoltar_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
     }
 }

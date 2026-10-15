@@ -143,4 +143,8 @@
 	  </None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="NovaPasta\" />
+	</ItemGroup>
+
 </Project>

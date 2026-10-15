@@ -1,65 +1,67 @@
-using Microsoft.Maui.Controls;
 
-namespace SysVeiculosApp
+using System.Collections.ObjectModel;
+
+namespace SysVeiculosApp;
+
+public partial class VeiculosPrincipal : ContentPage
 {
-    public partial class VeiculosPrincipal : ContentPage
+    public VeiculosPrincipal()
     {
-        public VeiculosPrincipal()
+        InitializeComponent();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        AtualizarLista();
+    }
+
+    private void SearchBarVeiculos_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        AtualizarLista();
+    }
+
+    private void AtualizarLista()
+    {
+        var veiculos = VeiculosRepositorio.Listar();
+        string termo = searchBarVeiculos.Text;
+
+        if (!string.IsNullOrWhiteSpace(termo))
         {
-            InitializeComponent();
+            veiculos = veiculos
+                .Where(v => $"{v.veid} {v.veinome} {v.veianofabricacao} {v.velobservacoes}"
+                    .Contains(termo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
-        protected override async void OnAppearing()
+        listaVeiculos.ItemsSource = veiculos;
+    }
+
+    private async void BtnInserirOnClick(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new VeiculosInserir());
+    }
+
+    private async void OnAlterarClicked(object sender, EventArgs e)
+    {
+        var veiculo = (sender as Button)?.CommandParameter as Veiculo;
+        if (veiculo == null) return;
+
+        await Navigation.PushAsync(new VeiculosAlterar(veiculo));
+    }
+
+    private async void OnExcluirClicked(object sender, EventArgs e)
+    {
+        var veiculo = (sender as Button)?.CommandParameter as Veiculo;
+        if (veiculo == null) return;
+
+        bool confirmar = await DisplayAlertAsync("Confirmação",
+            $"Deseja excluir o veículo {veiculo.veinome}?", "Sim", "Não");
+
+        if (confirmar)
         {
-            base.OnAppearing();
-
-            var veiculos = await App.Database.GetVeiculosAsync() ?? new List<Veiculo>();
-            collectionViewVeiculos.ItemsSource = veiculos;
-        }
-
-        private void collectionViewVeiculos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.Count > 0)
-            {
-                collectionViewVeiculos.SelectedItem = e.CurrentSelection[0];
-            }
-        }
-
-        private async void btnInserirOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new VeiculosInserir());
-        }
-
-        private async void btnAlterar_Clicked(object sender, EventArgs e)
-        {
-            Veiculo? veiculoSelecionado = collectionViewVeiculos.SelectedItem as Veiculo;
-            if (veiculoSelecionado == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona um veículo na lista para alterar.", "OK");
-                return;
-            }
-
-            await Navigation.PushAsync(new VeiculosAlterar(veiculoSelecionado));
-        }
-
-        private async void btnExcluir_Clicked(object sender, EventArgs e)
-        {
-            Veiculo? veiculoSelecionado = collectionViewVeiculos.SelectedItem as Veiculo;
-            if (veiculoSelecionado == null)
-            {
-                await DisplayAlertAsync("Aviso", "Por favor, seleciona um veículo na lista para excluir.", "OK");
-                return;
-            }
-
-            bool confirmar = await DisplayAlertAsync("Excluir", "Deseja realmente excluir este veículo?", "Sim", "Não");
-            if (confirmar)
-            {
-                await App.Database.DeletarVeiculoAsync(veiculoSelecionado);
-                await DisplayAlertAsync("Sucesso", "Veículo excluído com sucesso!", "OK");
-
-                var veiculos = await App.Database.GetVeiculosAsync() ?? new List<Veiculo>();
-                collectionViewVeiculos.ItemsSource = veiculos;
-            }
+            VeiculosRepositorio.Excluir(veiculo.veid);
+            AtualizarLista();
         }
     }
 }

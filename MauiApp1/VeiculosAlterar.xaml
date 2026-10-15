@@ -2,29 +2,22 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.VeiculosAlterar"
-             Title="Alterar Veículo">
+             Title=":: VEÍCULOS > ALTERAR ::..">
+    
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Nome" />
+        <Entry x:Name="entNome" Placeholder="Ex.: Corolla" />
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Label Text="Alterar Cadastro de Veículo"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+        <Label Text="Ano Fabricação" />
+        <Entry x:Name="entAnoFabricacao" Keyboard="Numeric" Placeholder="Ex.: 2022" />
 
-            <Label Text="Nome do Veículo:" FontAttributes="Bold" />
-            <Entry x:Name="txtNomeVeiculo" Placeholder="Digite o nome do veículo" />
+        <Label Text="Ano Modelo" />
+        <Entry x:Name="entAnoModelo" Keyboard="Numeric" Placeholder="Ex.: 2023" />
 
-            <Label Text="Ano de Fabricação:" FontAttributes="Bold" />
-            <Entry x:Name="txtAnoFabricacao" Placeholder="Digite o ano de fabricação" Keyboard="Numeric" />
+        <Label Text="Observações" />
+        <Entry x:Name="entObservacoes" Placeholder="Ex.: Completo" />
 
-            <Label Text="Ano do Modelo:" FontAttributes="Bold" />
-            <Entry x:Name="txtAnoModelo" Placeholder="Digite o ano do modelo" Keyboard="Numeric" />
-
-            <Label Text="Observações:" FontAttributes="Bold" />
-            <Entry x:Name="txtObservacoes" Placeholder="Digite as observações" />
-
-            <Button x:Name="btnSalvar" Text="Salvar" Clicked="btnSalvarOnClick" BackgroundColor="#2E7D32" TextColor="White" />
-            <Button x:Name="btnVoltar" Text="Voltar" Clicked="btnVoltarOnClick" BackgroundColor="#757575" TextColor="White" />
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button Text="Salvar" Clicked="BtnSalvar_Clicked" />
+        <Button Text="Voltar" Clicked="BtnVoltar_Clicked" />
+    </VerticalStackLayout>
 </ContentPage>

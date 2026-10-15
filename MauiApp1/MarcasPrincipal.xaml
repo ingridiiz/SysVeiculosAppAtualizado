@@ -2,40 +2,45 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.MarcasPrincipal"
-             Title="Marcas">
+             Title=":: MARCAS ::..">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid Padding="15" RowSpacing="15"
+          RowDefinitions="Auto,*,Auto">
 
-            <CollectionView x:Name="collectionViewMarcas" 
-                            HeightRequest="400" 
-                            SelectionMode="Single" 
-                            SelectionChanged="collectionViewMarcas_SelectionChanged">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                      
-                        <Border BackgroundColor="White"
-                                Stroke="#E0E0E0"
-                                StrokeThickness="1"
-                                Padding="15"
-                                Margin="0,5">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
+      
+        <SearchBar x:Name="searchBarMarcas"
+                   Grid.Row="0"
+                   Placeholder="Pesquisar marca..."
+                   TextChanged="SearchBarMarcas_TextChanged" />
 
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding marnome}" FontSize="18" FontAttributes="Bold" TextColor="Black" />
-                                <Label Text="{Binding marobservacoes}" FontSize="14" TextColor="Gray" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+        <CollectionView x:Name="listaMarcas"
+                        Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="50,*,*,50,50" VerticalOptions="Center">
+                        <Label Text="{Binding marid}" Grid.Column="0" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding marname}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding marobservacoes}" Grid.Column="2" VerticalOptions="Center" TextColor="Gray" />
 
-            <Button Text="Inserir" Clicked="btnInserir_Clicked"/>
-            <Button Text="Alterar" Clicked="btnAlterar_Clicked"/>
-            <Button Text="Excluir" Clicked="btnExcluir_Clicked" BackgroundColor="#D32F2F" TextColor="White" />
+                        <Button Text="✏️"
+                                Grid.Column="3"
+                                BackgroundColor="Transparent"
+                                Clicked="OnAlterarClicked"
+                                CommandParameter="{Binding}" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                        <Button Text="🗑️"
+                                Grid.Column="4"
+                                BackgroundColor="Transparent"
+                                Clicked="OnExcluirClicked"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        
+        <Button Text="Inserir"
+                Grid.Row="2"
+                Clicked="BtnInserirOnClick" />
+    </Grid>
 </ContentPage>

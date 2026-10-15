@@ -1,37 +1,36 @@
+using Microsoft.Maui.Controls;
+using System;
+
 namespace SysVeiculosApp;
 
 public partial class VeiculosAlterar : ContentPage
 {
-    private Veiculo _veiculoSelecionado;
+    private Veiculo _veiculo;
 
     public VeiculosAlterar(Veiculo veiculo)
     {
         InitializeComponent();
-        _veiculoSelecionado = veiculo;
+        _veiculo = veiculo;
 
-        
-        txtNomeVeiculo.Text = _veiculoSelecionado.veinome;
-        txtAnoFabricacao.Text = _veiculoSelecionado.veianofabricacao.ToString();
-        txtAnoModelo.Text = _veiculoSelecionado.veianomodelo.ToString();
-        txtObservacoes.Text = _veiculoSelecionado.veiobservacoes;
+        entNome.Text = _veiculo.veinome;
+        entAnoFabricacao.Text = _veiculo.veianofabricacao.ToString();
+        entAnoModelo.Text = _veiculo.veianomodelos.ToString();
+        entObservacoes.Text = _veiculo.velobservacoes;
     }
 
-    private async void btnSalvarOnClick(object sender, EventArgs e)
+    private async void BtnSalvar_Clicked(object sender, EventArgs e)
     {
-      
-        _veiculoSelecionado.veinome = txtNomeVeiculo.Text;
-        _veiculoSelecionado.veianofabricacao = int.Parse(txtAnoFabricacao.Text);
-        _veiculoSelecionado.veianomodelo = int.Parse(txtAnoModelo.Text);
-        _veiculoSelecionado.veiobservacoes = txtObservacoes.Text;
+        _veiculo.veinome = entNome.Text ?? "";
+        _veiculo.veianofabricacao = int.TryParse(entAnoFabricacao.Text, out int anoFab) ? anoFab : 0;
+        _veiculo.veianomodelos = int.TryParse(entAnoModelo.Text, out int anoMod) ? anoMod : 0;
+        _veiculo.velobservacoes = entObservacoes.Text ?? "";
 
-      
-        await App.Database.SalvarVeiculoAsync(_veiculoSelecionado);
+        VeiculosRepositorio.Alterar(_veiculo);
 
-        await DisplayAlertAsync("Sucesso", "Alteração salva com sucesso!", "OK");
         await Navigation.PopAsync();
     }
 
-    private async void btnVoltarOnClick(object sender, EventArgs e)
+    private async void BtnVoltar_Clicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
     }

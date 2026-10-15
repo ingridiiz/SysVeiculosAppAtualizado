@@ -2,49 +2,47 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.VeiculosPrincipal"
-             Title="Veículos">
+             Title=":: VEÍCULOS ::..">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid Padding="15" RowSpacing="15"
+          RowDefinitions="Auto,*,Auto">
 
-            <CollectionView x:Name="collectionViewVeiculos"
-                            HeightRequest="400"
-                            SelectionMode="Single"
-                            SelectionChanged="collectionViewVeiculos_SelectionChanged">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BackgroundColor="White"
-                                Stroke="#E0E0E0"
-                                StrokeThickness="1"
-                                Padding="15"
-                                Margin="0,5">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
+      
+        <SearchBar x:Name="searchBarVeiculos"
+                   Grid.Row="0"
+                   Placeholder="Pesquisar veículo..."
+                   TextChanged="SearchBarVeiculos_TextChanged" />
 
-                            <VerticalStackLayout Spacing="3">
-                               
-                                <Label Text="{Binding veinome}" FontSize="18" FontAttributes="Bold" TextColor="Black" />
+        
+        <CollectionView x:Name="listaVeiculos"
+                        Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="40,*,*,*,50,50" VerticalOptions="Center">
+                        <Label Text="{Binding veid}" Grid.Column="0" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding veinome}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding veianofabricacao}" Grid.Column="2" VerticalOptions="Center" TextColor="Gray" />
+                        <Label Text="{Binding velobservacoes}" Grid.Column="3" VerticalOptions="Center" TextColor="Gray" />
 
-                                <HorizontalStackLayout Spacing="10">
-                                    <Label Text="Fabricação:" FontSize="13" TextColor="Gray" />
-                                    <Label Text="{Binding veianofabricacao}" FontSize="13" TextColor="Black" />
-                                    <Label Text="• Modelo:" FontSize="13" TextColor="Gray" />
-                                    <Label Text="{Binding veianomodelo}" FontSize="13" TextColor="Black" />
-                                </HorizontalStackLayout>
+                        <Button Text="✏️"
+                                Grid.Column="4"
+                                BackgroundColor="Transparent"
+                                Clicked="OnAlterarClicked"
+                                CommandParameter="{Binding}" />
 
-                                
-                                <Label Text="{Binding veiobservacoes}" FontSize="14" TextColor="Gray" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                        <Button Text="🗑️"
+                                Grid.Column="5"
+                                BackgroundColor="Transparent"
+                                Clicked="OnExcluirClicked"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-            <Button Text="Inserir" Clicked="btnInserirOnClick"/>
-            <Button Text="Alterar" Clicked="btnAlterar_Clicked"/>
-            <Button Text="Excluir" Clicked="btnExcluir_Clicked" BackgroundColor="#D32F2F" TextColor="White" />
+        <Button Text="Inserir"
+                Grid.Row="2"
+                Clicked="BtnInserirOnClick" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </ContentPage>
