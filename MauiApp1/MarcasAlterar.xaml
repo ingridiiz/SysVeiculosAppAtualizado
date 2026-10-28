@@ -3,15 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.MarcasAlterar"
              Title=":: MARCA > ALTERAR ::..">
-    
-    <VerticalStackLayout Padding="20" Spacing="15">
+
+    <VerticalStackLayout Padding="15" Spacing="10">
+
         <Label Text="Nome" />
-        <Entry x:Name="entNome" Placeholder="Ex.: Fiat" />
+        <Entry x:Name="entNome" Placeholder="Ex.: Toyota" />
 
         <Label Text="Observações" />
-        <Entry x:Name="entObservacoes" Placeholder="Ex.: Fabricante italiano" />
+        <Entry x:Name="entObservacoes" Placeholder="Ex.: Marca japonesa" />
 
         <Button Text="Salvar" Clicked="BtnSalvar_Clicked" />
         <Button Text="Voltar" Clicked="BtnVoltar_Clicked" />
+
     </VerticalStackLayout>
 </ContentPage>

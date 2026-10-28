@@ -20,7 +20,7 @@ public partial class ModelosInserir : ContentPage
 
         ModelosRepositorio.Inserir(modelo);
 
-        await Navigation.PopAsync(); // volta para a lista
+        await Navigation.PopAsync();
     }
 
     private async void BtnVoltar_Clicked(object sender, EventArgs e)

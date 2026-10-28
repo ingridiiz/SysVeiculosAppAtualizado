@@ -13,7 +13,7 @@ public static class MarcasRepositorio
 
     public static List<Marca> Listar()
     {
-        return _marcas.OrderBy(m => m.marnome).ToList();
+        return _marcas.OrderBy(m => m.marid).ToList();
     }
 
     public static void Inserir(Marca marca)

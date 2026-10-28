@@ -1,4 +1,3 @@
-
 namespace SysVeiculosApp;
 
 public partial class MarcasInserir : ContentPage
@@ -10,15 +9,15 @@ public partial class MarcasInserir : ContentPage
 
     private async void BtnSalvar_Clicked(object sender, EventArgs e)
     {
-        var modelo = new Modelo
+        var marca = new Marca
         {
-            modnome = entNome.Text ?? "",
-            modobservacoes = entObservacoes.Text ?? ""
+            marnome = entNome.Text ?? "",
+            marobservacoes = entObservacoes.Text ?? ""
         };
 
-        ModelosRepositorio.Inserir(modelo);
+        MarcasRepositorio.Inserir(marca);
 
-        await Navigation.PopAsync(); 
+        await Navigation.PopAsync();
     }
 
     private async void BtnVoltar_Clicked(object sender, EventArgs e)

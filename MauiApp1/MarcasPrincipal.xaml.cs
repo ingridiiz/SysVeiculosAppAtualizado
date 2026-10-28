@@ -1,5 +1,7 @@
-
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Maui.Controls;
 
 namespace SysVeiculosApp;
 
@@ -13,55 +15,55 @@ public partial class MarcasPrincipal : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        AtualizarLista();
+        AtualizarLista(searchBarMarcas?.Text);
     }
 
     private void SearchBarMarcas_TextChanged(object sender, TextChangedEventArgs e)
     {
-        AtualizarLista();
+        AtualizarLista(e.NewTextValue);
     }
 
-    private void AtualizarLista()
+    private void AtualizarLista(string termo = "")
     {
-        var modelos = ModelosRepositorio.Listar();
-        string termo = searchBarMarcas.Text;
+        var marcas = MarcasRepositorio.Listar();
+        termo = (termo ?? "").Trim();
 
-        if (!string.IsNullOrWhiteSpace(termo))
+        if (termo != "")
         {
-            modelos = modelos
-                .Where(m => $"{m.modid} {m.modnome} {m.modobservacoes}"
-                    .Contains(termo, StringComparison.OrdinalIgnoreCase))
+            marcas = marcas
+                .Where(m => (m.marnome ?? "").Contains(termo, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
-        listaMarcas.ItemsSource = modelos;
+     
+        listaMarcas.ItemsSource = marcas;
     }
 
     private async void BtnInserirOnClick(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new ModelosInserir());
+        await Navigation.PushAsync(new MarcasInserir());
     }
 
     private async void OnAlterarClicked(object sender, EventArgs e)
     {
-        var modelo = (sender as Button)?.CommandParameter as Modelo;
-        if (modelo == null) return;
+        var marca = (sender as Button)?.CommandParameter as Marca;
+        if (marca == null) return;
 
-        await Navigation.PushAsync(new ModelosAlterar(modelo));
+        await Navigation.PushAsync(new MarcasAlterar(marca));
     }
 
     private async void OnExcluirClicked(object sender, EventArgs e)
     {
-        var modelo = (sender as Button)?.CommandParameter as Modelo;
-        if (modelo == null) return;
+        var marca = (sender as Button)?.CommandParameter as Marca;
+        if (marca == null) return;
 
         bool confirmar = await DisplayAlertAsync("Confirmação",
-            $"Deseja excluir o modelo {modelo.modnome}?", "Sim", "Não");
+            $"Deseja excluir a marca {marca.marnome}?", "Sim", "Não");
 
         if (confirmar)
         {
-            ModelosRepositorio.Excluir(modelo.modid);
-            AtualizarLista();
+            MarcasRepositorio.Excluir(marca.marid);
+            AtualizarLista(searchBarMarcas?.Text);
         }
     }
 }

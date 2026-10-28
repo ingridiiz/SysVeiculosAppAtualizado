@@ -1,47 +1,41 @@
 using Microsoft.Maui.Controls;
 using System;
-using SysVeiculosApp;
 
-namespace SysVeiculosApp
+namespace SysVeiculosApp;
+
+public partial class ModelosAlterar : ContentPage
 {
-    public partial class ModelosAlterar : ContentPage
+    private readonly Modelo _modelo;
+
+    public ModelosAlterar(Modelo modelo)
     {
-        private readonly Modelo _modelo;
+        InitializeComponent();
 
-        public ModelosAlterar(Modelo modelo)
+        _modelo = modelo;
+
+        entModId.Text = _modelo.modid.ToString();
+        txtNomeModelo.Text = _modelo.modnome;
+        txtModObservacoes.Text = _modelo.modobservacoes;
+    }
+
+    private async void btnSalvarOnClick(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(txtNomeModelo.Text))
         {
-            InitializeComponent();
-
-            _modelo = modelo;
-
-            entModId.Text = _modelo.modid.ToString();
-            txtNomeModelo.Text = _modelo.modnome;
-            txtModObservacoes.Text = _modelo.modobservacoes;
+            await DisplayAlertAsync("Erro", "Por favor, insere o nome do modelo.", "OK");
+            return;
         }
 
-        private async void btnSalvarOnClick(object sender, EventArgs e)
-        {
-            var modelo = new Modelo
-            {
-                modid = _modelo.modid,
-                modnome = txtNomeModelo.Text ?? string.Empty,
-                modobservacoes = txtModObservacoes.Text ?? string.Empty
-            };
+        _modelo.modnome = txtNomeModelo.Text ?? string.Empty;
+        _modelo.modobservacoes = txtModObservacoes.Text ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(modelo.modnome))
-            {
-                await DisplayAlertAsync("Erro", "Por favor, insere o nome do modelo.", "OK");
-                return;
-            }
+        ModelosRepositorio.Alterar(_modelo);
 
-            ModelosRepositorio.Alterar(modelo);
+        await Navigation.PopAsync();
+    }
 
-            await Navigation.PopAsync();
-        }
-
-        private async void btnVoltarOnClick(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
-        }
+    private async void btnVoltarOnClick(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
     }
 }

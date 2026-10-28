@@ -5,23 +5,23 @@ namespace SysVeiculosApp;
 
 public partial class MarcasAlterar : ContentPage
 {
-    private Modelo _modelo;
+    private Marca _marca;
 
-    public MarcasAlterar(Modelo modelo)
+    public MarcasAlterar(Marca marca)
     {
         InitializeComponent();
-        _modelo = modelo;
+        _marca = marca;
 
-        entNome.Text = _modelo.modnome;
-        entObservacoes.Text = _modelo.modobservacoes;
+        entNome.Text = _marca.marnome;
+        entObservacoes.Text = _marca.marobservacoes;
     }
 
     private async void BtnSalvar_Clicked(object sender, EventArgs e)
     {
-        _modelo.modnome = entNome.Text ?? "";
-        _modelo.modobservacoes = entObservacoes.Text ?? "";
+        _marca.marnome = entNome.Text ?? "";
+        _marca.marobservacoes = entObservacoes.Text ?? "";
 
-        ModelosRepositorio.Alterar(_modelo);
+        MarcasRepositorio.Alterar(_marca);
 
         await Navigation.PopAsync();
     }

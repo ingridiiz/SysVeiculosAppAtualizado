@@ -19,7 +19,7 @@
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="50,*,*,50,50" VerticalOptions="Center">
                         <Label Text="{Binding marid}" Grid.Column="0" FontAttributes="Bold" VerticalOptions="Center" />
-                        <Label Text="{Binding marname}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Text="{Binding marnome}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" />
                         <Label Text="{Binding marobservacoes}" Grid.Column="2" VerticalOptions="Center" TextColor="Gray" />
 
                         <Button Text="✏️"
