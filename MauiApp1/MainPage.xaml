@@ -2,26 +2,72 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.MainPage"
-             Title="Home">
+             Title=":: SYSVEICULOS APP ::..">
+
+    <ContentPage.Resources>
+        <Style x:Key="Cartao" TargetType="Border">
+            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+            <Setter Property="Padding" Value="15" />
+        </Style>
+    </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="25" VerticalOptions="Center">
+        <VerticalStackLayout Padding="20" Spacing="20">
 
          
-            <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
-                <Label Text="Bem-vindo ao SysVeiculosApp" 
-                       FontSize="22" 
-                       FontAttributes="Bold" 
-                       TextColor="#333333" 
-                       HorizontalTextAlignment="Center" />
+            <Image Source="veiculos.png" HeightRequest="90" />
+            <Label Text="SysVeiculos App"
+                   FontSize="26" FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" />
+            <Label Text="Cadastro de Marcas, Modelos e Veículos"
+                   HorizontalTextAlignment="Center" />
 
-                <Label Text="Painel de controle do sistema" 
-                       FontSize="15" 
-                       TextColor="Gray" 
-                       HorizontalTextAlignment="Center" />
-            </VerticalStackLayout>
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                  ColumnSpacing="15" RowSpacing="15">
+
+                
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Cartao}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Cartao_Tapped" CommandParameter="MarcasPrincipal" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="5">
+                        <Image Source="marcas.png" HeightRequest="48" />
+                        <Label Text="Marcas" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label x:Name="lblQtdMarcas" FontSize="12" HorizontalTextAlignment="Center" Text="Gerenciar" />
+                    </VerticalStackLayout>
+                </Border>
+
+               
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource Cartao}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Cartao_Tapped" CommandParameter="ModelosPrincipal" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="5">
+                        <Image Source="modelo.png" HeightRequest="48" />
+                        <Label Text="Modelos" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label x:Name="lblQtdModelos" FontSize="12" HorizontalTextAlignment="Center" Text="Gerenciar" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Cartao}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Cartao_Tapped" CommandParameter="VeiculosPrincipal" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="5">
+                        <Image Source="veiculos.png" HeightRequest="48" />
+                        <Label Text="Veículos" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label x:Name="lblQtdVeiculos" FontSize="12" HorizontalTextAlignment="Center" Text="Frota completa" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+
+            
+            <Button Text="Sobre o aplicativo"
+                    Clicked="BtnSobre_Clicked" />
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

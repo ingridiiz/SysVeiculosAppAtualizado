@@ -9,4 +9,8 @@ public class Veiculo
     public string velobservacoes { get; set; } = string.Empty;
     public int marid { get; set; }
     public int modid { get; set; }
+
+    public string NomeModelo =>
+        ModelosRepositorio.Listar().FirstOrDefault(m => m.modid == modid)?.modnome ?? "";
 }
+

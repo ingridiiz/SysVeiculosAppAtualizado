@@ -1,6 +1,4 @@
-
 using System.Collections.ObjectModel;
-
 namespace SysVeiculosApp;
 
 public partial class VeiculosPrincipal : ContentPage

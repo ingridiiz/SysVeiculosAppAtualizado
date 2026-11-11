@@ -5,9 +5,10 @@ namespace SysVeiculosApp;
 
 public static class VeiculosRepositorio
 {
+  
     private static readonly List<Veiculo> _veiculos = new()
     {
-        new Veiculo { veid = 1, veinome = "Corolla", veianofabricacao = 2022, veianomodelos = 2023 }
+        new Veiculo { veid = 1, veinome = "Corolla", veianofabricacao = 2022, veianomodelos = 2023, marid = 1, modid = 1 }
     };
 
     public static List<Veiculo> Listar()
@@ -37,5 +38,11 @@ public static class VeiculosRepositorio
     public static void Excluir(int veid)
     {
         _veiculos.RemoveAll(v => v.veid == veid);
+    }
+
+ 
+    public static bool ExisteVeiculoNoModelo(int modid)
+    {
+        return _veiculos.Any(v => v.modid == modid);
     }
 }

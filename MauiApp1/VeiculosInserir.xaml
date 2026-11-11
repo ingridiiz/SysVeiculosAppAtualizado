@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SysVeiculosApp.VeiculosInserir"
              Title=":: VEÍCULOS > INSERIR ::..">
-    
+
     <VerticalStackLayout Padding="20" Spacing="15">
         <Label Text="Nome" />
         <Entry x:Name="entNome" Placeholder="Ex.: Onix" />
@@ -16,6 +16,12 @@
 
         <Label Text="Observações" />
         <Entry x:Name="entObservacoes" Placeholder="Ex.: Completo" />
+
+       
+        <Label Text="Modelo" />
+        <Picker x:Name="pickModelo"
+                Title="Selecione o modelo"
+                ItemDisplayBinding="{Binding modnome}" />
 
         <Button Text="Salvar" Clicked="BtnSalvar_Clicked" />
         <Button Text="Voltar" Clicked="BtnVoltar_Clicked" />
