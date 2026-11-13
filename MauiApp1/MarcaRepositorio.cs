@@ -35,4 +35,10 @@ public static class MarcasRepositorio
     {
         _marcas.RemoveAll(m => m.marid == marid);
     }
+
+    
+    public static bool ExisteModeloNaMarca(int marid)
+    {
+        return ModelosRepositorio.Listar().Any(m => m.marid == marid);
+    }
 }
