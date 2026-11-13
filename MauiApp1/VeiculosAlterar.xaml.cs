@@ -19,10 +19,14 @@ public partial class VeiculosAlterar : ContentPage
         entAnoModelo.Text = _veiculo.veianomodelos.ToString();
         entObservacoes.Text = _veiculo.velobservacoes;
 
-       
+      
         var modelos = ModelosRepositorio.Listar();
         pickModelo.ItemsSource = modelos;
-        pickModelo.SelectedItem = modelos.FirstOrDefault(m => m.modid == _veiculo.modid);
+
+        if (_veiculo != null)
+        {
+            pickModelo.SelectedItem = modelos.FirstOrDefault(m => m.modid == _veiculo.modid);
+        }
     }
 
     private async void BtnSalvar_Clicked(object sender, EventArgs e)

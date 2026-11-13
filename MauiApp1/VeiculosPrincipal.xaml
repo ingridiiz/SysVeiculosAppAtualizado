@@ -7,37 +7,42 @@
     <Grid Padding="15" RowSpacing="15"
           RowDefinitions="Auto,*,Auto">
 
-      
+
         <SearchBar x:Name="searchBarVeiculos"
                    Grid.Row="0"
                    Placeholder="Pesquisar veículo..."
                    TextChanged="SearchBarVeiculos_TextChanged" />
 
-        
+
         <CollectionView x:Name="listaVeiculos"
                         Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="5" ColumnDefinitions="25,2*,50,50,*,40,40" VerticalOptions="Center">
+                  
+                    <Grid Padding="5" ColumnDefinitions="25,2*,*,50,50,*,40,40" VerticalOptions="Center">
                         <Label Text="{Binding veid}" Grid.Column="0" FontAttributes="Bold" VerticalOptions="Center" />
                         <Label Text="{Binding veinome}" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" LineBreakMode="TailTruncation" />
-                        <Label Text="{Binding veianofabricacao}" Grid.Column="2" VerticalOptions="Center" TextColor="Gray" FontSize="13" />
-                        <Label Text="{Binding veianomodelos}" Grid.Column="3" VerticalOptions="Center" TextColor="Gray" FontSize="13" />
-                        <Label Text="{Binding velobservacoes}" Grid.Column="4" VerticalOptions="Center" TextColor="Gray" FontSize="13" LineBreakMode="TailTruncation" />
+
+                        
+                        <Label Text="{Binding NomeModelo}" Grid.Column="2" VerticalOptions="Center" TextColor="LightSkyBlue" FontSize="13" LineBreakMode="TailTruncation" />
+
+                        <Label Text="{Binding veianofabricacao}" Grid.Column="3" VerticalOptions="Center" TextColor="Gray" FontSize="13" />
+                        <Label Text="{Binding veianomodelos}" Grid.Column="4" VerticalOptions="Center" TextColor="Gray" FontSize="13" />
+                        <Label Text="{Binding velobservacoes}" Grid.Column="5" VerticalOptions="Center" TextColor="Gray" FontSize="13" LineBreakMode="TailTruncation" />
 
                         <Button Text="✏️"
-            Grid.Column="5"
-            Padding="0"
-            BackgroundColor="Transparent"
-            Clicked="OnAlterarClicked"
-            CommandParameter="{Binding}" />
+                                Grid.Column="6"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                Clicked="OnAlterarClicked"
+                                CommandParameter="{Binding}" />
 
                         <Button Text="🗑️"
-            Grid.Column="6"
-            Padding="0"
-            BackgroundColor="Transparent"
-            Clicked="OnExcluirClicked"
-            CommandParameter="{Binding}" />
+                                Grid.Column="7"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                Clicked="OnExcluirClicked"
+                                CommandParameter="{Binding}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
