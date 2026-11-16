@@ -1,45 +1,84 @@
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SysVeiculosApp;
 
 public static class ModelosRepositorio
 {
-    private static readonly List<Modelo> _modelos = new()
-    {
-        new Modelo { modid = 1, modnome = "Civic", marid = 2 },   
-        new Modelo { modid = 2, modnome = "Corolla", marid = 1 }  
-    };
-
     public static List<Modelo> Listar()
     {
-        return _modelos.OrderBy(m => m.modnome).ToList();
+        var lista = new List<Modelo>();
+
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "SELECT modid, modnome, modobservacoes FROM tblmodelos ORDER BY modnome;";
+
+        using var leitor = comando.ExecuteReader();
+        while (leitor.Read())
+        {
+            lista.Add(new Modelo
+            {
+                modid = leitor.GetInt32(0),
+                modnome = leitor.GetString(1),
+                modobservacoes = leitor.IsDBNull(2) ? string.Empty : leitor.GetString(2)
+            });
+        }
+
+        return lista;
     }
 
     public static void Inserir(Modelo modelo)
     {
-        modelo.modid = _modelos.Select(m => m.modid).DefaultIfEmpty(0).Max() + 1;
-        _modelos.Add(modelo);
+        using var conexao = BancoDados.ObterConexao();
+
+        using var cmdId = conexao.CreateCommand();
+        cmdId.CommandText = "SELECT IFNULL(MAX(modid), 0) + 1 FROM tblmodelos;";
+        modelo.modid = System.Convert.ToInt32(cmdId.ExecuteScalar());
+
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            INSERT INTO tblmodelos (modid, modnome, modobservacoes)
+            VALUES (@modid, @modnome, @modobservacoes);";
+
+        comando.Parameters.AddWithValue("@modid", modelo.modid);
+        comando.Parameters.AddWithValue("@modnome", modelo.modnome ?? string.Empty);
+        comando.Parameters.AddWithValue("@modobservacoes", modelo.modobservacoes ?? string.Empty);
+        comando.ExecuteNonQuery();
     }
 
     public static void Alterar(Modelo modelo)
     {
-        var existente = _modelos.FirstOrDefault(m => m.modid == modelo.modid);
-        if (existente == null) return;
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            UPDATE tblmodelos
+            SET modnome = @modnome,
+                modobservacoes = @modobservacoes
+            WHERE modid = @modid;";
 
-        existente.modnome = modelo.modnome;
-        existente.modobservacoes = modelo.modobservacoes;
-        existente.marid = modelo.marid;
+        comando.Parameters.AddWithValue("@modid", modelo.modid);
+        comando.Parameters.AddWithValue("@modnome", modelo.modnome ?? string.Empty);
+        comando.Parameters.AddWithValue("@modobservacoes", modelo.modobservacoes ?? string.Empty);
+        comando.ExecuteNonQuery();
     }
 
     public static void Excluir(int modid)
     {
-        _modelos.RemoveAll(m => m.modid == modid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "DELETE FROM tblmodelos WHERE modid = @modid;";
+        comando.Parameters.AddWithValue("@modid", modid);
+        comando.ExecuteNonQuery();
     }
-
 
     public static bool ExisteVeiculoNoModelo(int modid)
     {
-        return VeiculosRepositorio.Listar().Any(v => v.modid == modid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "SELECT COUNT(*) FROM tblveiculos WHERE modid = @modid;";
+        comando.Parameters.AddWithValue("@modid", modid);
+
+        var total = System.Convert.ToInt32(comando.ExecuteScalar());
+        return total > 0;
     }
 }

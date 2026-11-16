@@ -1,48 +1,103 @@
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SysVeiculosApp;
 
 public static class VeiculosRepositorio
 {
-  
-    private static readonly List<Veiculo> _veiculos = new()
-    {
-        new Veiculo { veid = 1, veinome = "Corolla", veianofabricacao = 2022, veianomodelos = 2023, marid = 1, modid = 1 }
-    };
-
     public static List<Veiculo> Listar()
     {
-        return _veiculos.OrderBy(v => v.veinome).ToList();
+        var lista = new List<Veiculo>();
+
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            SELECT veid, veianofabricacao, veianomodelo, veinome, veiobservacoes, marid, modid
+            FROM tblveiculos
+            ORDER BY veinome;";
+
+        using var leitor = comando.ExecuteReader();
+        while (leitor.Read())
+        {
+            lista.Add(new Veiculo
+            {
+                veid = leitor.GetInt32(0),
+                veianofabricacao = leitor.GetInt32(1),
+                veianomodelos = leitor.GetInt32(2),
+                veinome = leitor.GetString(3),
+                velobservacoes = leitor.IsDBNull(4) ? string.Empty : leitor.GetString(4),
+                marid = leitor.GetInt32(5),
+                modid = leitor.GetInt32(6)
+            });
+        }
+
+        return lista;
     }
 
     public static void Inserir(Veiculo veiculo)
     {
-        veiculo.veid = _veiculos.Select(v => v.veid).DefaultIfEmpty(0).Max() + 1;
-        _veiculos.Add(veiculo);
+        using var conexao = BancoDados.ObterConexao();
+
+        using var cmdId = conexao.CreateCommand();
+        cmdId.CommandText = "SELECT IFNULL(MAX(veid), 0) + 1 FROM tblveiculos;";
+        veiculo.veid = System.Convert.ToInt32(cmdId.ExecuteScalar());
+
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            INSERT INTO tblveiculos (veid, veianofabricacao, veianomodelo, veinome, veiobservacoes, marid, modid)
+            VALUES (@veid, @veianofabricacao, @veianomodelo, @veinome, @veiobservacoes, @marid, @modid);";
+
+        comando.Parameters.AddWithValue("@veid", veiculo.veid);
+        comando.Parameters.AddWithValue("@veianofabricacao", veiculo.veianofabricacao);
+        comando.Parameters.AddWithValue("@veianomodelo", veiculo.veianomodelos);
+        comando.Parameters.AddWithValue("@veinome", veiculo.veinome ?? string.Empty);
+        comando.Parameters.AddWithValue("@veiobservacoes", veiculo.velobservacoes ?? string.Empty);
+        comando.Parameters.AddWithValue("@marid", veiculo.marid);
+        comando.Parameters.AddWithValue("@modid", veiculo.modid);
+        comando.ExecuteNonQuery();
     }
 
     public static void Alterar(Veiculo veiculo)
     {
-        var existente = _veiculos.FirstOrDefault(v => v.veid == veiculo.veid);
-        if (existente == null) return;
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            UPDATE tblveiculos
+            SET veianofabricacao = @veianofabricacao,
+                veianomodelo = @veianomodelo,
+                veinome = @veinome,
+                veiobservacoes = @veiobservacoes,
+                marid = @marid,
+                modid = @modid
+            WHERE veid = @veid;";
 
-        existente.veinome = veiculo.veinome;
-        existente.veianofabricacao = veiculo.veianofabricacao;
-        existente.veianomodelos = veiculo.veianomodelos;
-        existente.velobservacoes = veiculo.velobservacoes;
-        existente.marid = veiculo.marid;
-        existente.modid = veiculo.modid;
+        comando.Parameters.AddWithValue("@veid", veiculo.veid);
+        comando.Parameters.AddWithValue("@veianofabricacao", veiculo.veianofabricacao);
+        comando.Parameters.AddWithValue("@veianomodelo", veiculo.veianomodelos);
+        comando.Parameters.AddWithValue("@veinome", veiculo.veinome ?? string.Empty);
+        comando.Parameters.AddWithValue("@veiobservacoes", veiculo.velobservacoes ?? string.Empty);
+        comando.Parameters.AddWithValue("@marid", veiculo.marid);
+        comando.Parameters.AddWithValue("@modid", veiculo.modid);
+        comando.ExecuteNonQuery();
     }
 
     public static void Excluir(int veid)
     {
-        _veiculos.RemoveAll(v => v.veid == veid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "DELETE FROM tblveiculos WHERE veid = @veid;";
+        comando.Parameters.AddWithValue("@veid", veid);
+        comando.ExecuteNonQuery();
     }
 
- 
     public static bool ExisteVeiculoNoModelo(int modid)
     {
-        return _veiculos.Any(v => v.modid == modid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "SELECT COUNT(*) FROM tblveiculos WHERE modid = @modid;";
+        comando.Parameters.AddWithValue("@modid", modid);
+
+        var total = System.Convert.ToInt32(comando.ExecuteScalar());
+        return total > 0;
     }
 }

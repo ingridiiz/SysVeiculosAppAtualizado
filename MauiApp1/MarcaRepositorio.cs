@@ -1,44 +1,84 @@
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SysVeiculosApp;
 
 public static class MarcasRepositorio
 {
-    private static readonly List<Marca> _marcas = new()
-    {
-        new Marca { marid = 1, marnome = "Toyota" },
-        new Marca { marid = 2, marnome = "Honda" }
-    };
-
     public static List<Marca> Listar()
     {
-        return _marcas.OrderBy(m => m.marid).ToList();
+        var lista = new List<Marca>();
+
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "SELECT marid, marnome, marobservacoes FROM tblMarcas ORDER BY marid;";
+
+        using var leitor = comando.ExecuteReader();
+        while (leitor.Read())
+        {
+            lista.Add(new Marca
+            {
+                marid = leitor.GetInt32(0),
+                marnome = leitor.GetString(1),
+                marobservacoes = leitor.IsDBNull(2) ? string.Empty : leitor.GetString(2)
+            });
+        }
+
+        return lista;
     }
 
     public static void Inserir(Marca marca)
     {
-        marca.marid = _marcas.Select(m => m.marid).DefaultIfEmpty(0).Max() + 1;
-        _marcas.Add(marca);
+        using var conexao = BancoDados.ObterConexao();
+
+        using var cmdId = conexao.CreateCommand();
+        cmdId.CommandText = "SELECT IFNULL(MAX(marid), 0) + 1 FROM tblMarcas;";
+        marca.marid = System.Convert.ToInt32(cmdId.ExecuteScalar());
+
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            INSERT INTO tblMarcas (marid, marnome, marobservacoes)
+            VALUES (@marid, @marnome, @marobservacoes);";
+
+        comando.Parameters.AddWithValue("@marid", marca.marid);
+        comando.Parameters.AddWithValue("@marnome", marca.marnome ?? string.Empty);
+        comando.Parameters.AddWithValue("@marobservacoes", marca.marobservacoes ?? string.Empty);
+        comando.ExecuteNonQuery();
     }
 
     public static void Alterar(Marca marca)
     {
-        var existente = _marcas.FirstOrDefault(m => m.marid == marca.marid);
-        if (existente == null) return;
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = @"
+            UPDATE tblMarcas
+            SET marnome = @marnome,
+                marobservacoes = @marobservacoes
+            WHERE marid = @marid;";
 
-        existente.marnome = marca.marnome;
-        existente.marobservacoes = marca.marobservacoes;
+        comando.Parameters.AddWithValue("@marid", marca.marid);
+        comando.Parameters.AddWithValue("@marnome", marca.marnome ?? string.Empty);
+        comando.Parameters.AddWithValue("@marobservacoes", marca.marobservacoes ?? string.Empty);
+        comando.ExecuteNonQuery();
     }
 
     public static void Excluir(int marid)
     {
-        _marcas.RemoveAll(m => m.marid == marid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "DELETE FROM tblMarcas WHERE marid = @marid;";
+        comando.Parameters.AddWithValue("@marid", marid);
+        comando.ExecuteNonQuery();
     }
 
-    
     public static bool ExisteModeloNaMarca(int marid)
     {
-        return ModelosRepositorio.Listar().Any(m => m.marid == marid);
+        using var conexao = BancoDados.ObterConexao();
+        using var comando = conexao.CreateCommand();
+        comando.CommandText = "SELECT COUNT(*) FROM tblveiculos WHERE marid = @marid;";
+        comando.Parameters.AddWithValue("@marid", marid);
+
+        var total = System.Convert.ToInt32(comando.ExecuteScalar());
+        return total > 0;
     }
 }
