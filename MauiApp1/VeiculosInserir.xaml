@@ -4,26 +4,32 @@
              x:Class="SysVeiculosApp.VeiculosInserir"
              Title=":: VEÍCULOS > INSERIR ::..">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Nome" />
-        <Entry x:Name="entNome" Placeholder="Ex.: Onix" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label Text="Nome" />
+            <Entry x:Name="entNome" Placeholder="Ex.: Onix" />
 
-        <Label Text="Ano Fabricação" />
-        <Entry x:Name="entAnoFabricacao" Keyboard="Numeric" Placeholder="Ex.: 2022" />
+            <Label Text="Ano Fabricação" />
+            <Entry x:Name="entAnoFabricacao" Keyboard="Numeric" Placeholder="Ex.: 2022" />
 
-        <Label Text="Ano Modelo" />
-        <Entry x:Name="entAnoModelo" Keyboard="Numeric" Placeholder="Ex.: 2023" />
+            <Label Text="Ano Modelo" />
+            <Entry x:Name="entAnoModelo" Keyboard="Numeric" Placeholder="Ex.: 2023" />
 
-        <Label Text="Observações" />
-        <Entry x:Name="entObservacoes" Placeholder="Ex.: Completo" />
+            <Label Text="Observações" />
+            <Entry x:Name="entObservacoes" Placeholder="Ex.: Completo" />
 
-       
-        <Label Text="Modelo" />
-        <Picker x:Name="pickModelo"
-                Title="Selecione o modelo"
-                ItemDisplayBinding="{Binding modnome}" />
+            <Label Text="Marca" />
+            <Picker x:Name="pickMarca"
+                    Title="Selecione a marca"
+                    ItemDisplayBinding="{Binding marnome}" />
 
-        <Button Text="Salvar" Clicked="BtnSalvar_Clicked" />
-        <Button Text="Voltar" Clicked="BtnVoltar_Clicked" />
-    </VerticalStackLayout>
+            <Label Text="Modelo" />
+            <Picker x:Name="pickModelo"
+                    Title="Selecione o modelo"
+                    ItemDisplayBinding="{Binding modnome}" />
+
+            <Button Text="Salvar" Clicked="BtnSalvar_Clicked" />
+            <Button Text="Voltar" Clicked="BtnVoltar_Clicked" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

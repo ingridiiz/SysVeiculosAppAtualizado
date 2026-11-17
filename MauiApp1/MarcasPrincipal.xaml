@@ -15,6 +15,7 @@
 
         <CollectionView x:Name="listaMarcas"
                         Grid.Row="1">
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="50,*,*,50,50" VerticalOptions="Center">
