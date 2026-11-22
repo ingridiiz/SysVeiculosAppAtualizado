@@ -10,45 +10,48 @@ public static class BancoDados
 
     public static string CaminhoBanco => Path.Combine(FileSystem.AppDataDirectory, NomeArquivo);
 
+    private static bool _estruturaCriada;
+
     public static SqliteConnection ObterConexao()
     {
-  
-        if (!File.Exists(CaminhoBanco))
-        {
-            var conexaoCriacao = new SqliteConnection($"Data Source={CaminhoBanco}");
-            conexaoCriacao.Open();
-
-            using var cmd = conexaoCriacao.CreateCommand();
-            cmd.CommandText = @"
-                CREATE TABLE IF NOT EXISTS Marca (
-                    marid INTEGER PRIMARY KEY AUTOINCREMENT,
-                    marnome TEXT NOT NULL
-                );
-                CREATE TABLE IF NOT EXISTS Modelo (
-                    modid INTEGER PRIMARY KEY AUTOINCREMENT,
-                    modnome TEXT NOT NULL,
-                    marid INTEGER NOT NULL,
-                    FOREIGN KEY(marid) REFERENCES Marca(marid)
-                );
-                CREATE TABLE IF NOT EXISTS Veiculo (
-                    veiid INTEGER PRIMARY KEY AUTOINCREMENT,
-                    veinome TEXT NOT NULL,
-                    veianofabricacao INTEGER,
-                    veianomodelos INTEGER,
-                    velobservacoes TEXT,
-                    modid INTEGER NOT NULL,
-                    FOREIGN KEY(modid) REFERENCES Modelo(modid)
-                );
-            ";
-            cmd.ExecuteNonQuery();
-        }
-
         var conexao = new SqliteConnection($"Data Source={CaminhoBanco}");
         conexao.Open();
 
         using var pragma = conexao.CreateCommand();
         pragma.CommandText = "PRAGMA foreign_keys = ON;";
         pragma.ExecuteNonQuery();
+
+        // Garante as tabelas usadas pelos repositórios (roda uma vez por execução do app,
+        // mesmo que o arquivo .db já exista com estrutura antiga).
+        if (!_estruturaCriada)
+        {
+            using var cmd = conexao.CreateCommand();
+            cmd.CommandText = @"
+                CREATE TABLE IF NOT EXISTS tblMarcas (
+                    marid INTEGER PRIMARY KEY,
+                    marnome TEXT NOT NULL,
+                    marobservacoes TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS tblmodelos (
+                    modid INTEGER PRIMARY KEY,
+                    modnome TEXT NOT NULL,
+                    modobservacoes TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS tblveiculos (
+                    veid INTEGER PRIMARY KEY,
+                    veianofabricacao INTEGER NOT NULL,
+                    veianomodelo INTEGER NOT NULL,
+                    veinome TEXT NOT NULL,
+                    veiobservacoes TEXT NOT NULL,
+                    marid INTEGER NOT NULL,
+                    modid INTEGER NOT NULL,
+                    FOREIGN KEY (marid) REFERENCES tblMarcas(marid),
+                    FOREIGN KEY (modid) REFERENCES tblmodelos(modid)
+                );
+            ";
+            cmd.ExecuteNonQuery();
+            _estruturaCriada = true;
+        }
 
         return conexao;
     }
